@@ -100,10 +100,12 @@
   </pre>
   <p>This should generate a button similar (unstyled) to the one below: </p>
   <web3-button></web3-button>
-  <div class="visible-when-connected callout">
-    <h3>Current Account</h3>
-    <p id="currentAccount"></p>
-    <p id="balance"></p>
+  <div class="visible-when-connected">
+    <div class="callout">
+      <h3>Current Account</h3>
+      <p id="currentAccount"></p>
+      <p id="balance"></p>
+    </div>
   </div>
   <p>By default, the button connects to the rinkeby network and allows users with metamask to connect.  You can configure additional wallet providers and the default network by using the following configuration:</p>
   <pre>
