@@ -10,9 +10,11 @@ import {
 } from '../lib/web3';
 import { networkId } from '../lib/providerOptions';
 
+const id = `web3button_${(Math.random(1000) * 1000)}`
+
 const template = document.createElement('template');
 template.innerHTML = `
-  <button id="web3Button" style="display:none;"></button>
+  <button id=${id} class="web3button" style="display:none;"></button>
 `;
 
 export class Web3Button extends HTMLElement {
@@ -42,12 +44,12 @@ export class Web3Button extends HTMLElement {
     });
 
     await updateUI();
-    document.getElementById('web3Button').style.display = 'block';
+    document.getElementById(id).style.display = 'block';
   }
 }
 
 export const updateUI = async () => {
-  const web3Button = document.getElementById('web3Button');
+  const web3Button = document.getElementById(id);
 
   if (location.protocol !== 'https:') {
     web3Button.setAttribute('disabled', 'disabled');

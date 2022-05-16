@@ -101,6 +101,14 @@ label {
     margin-top:20px;
 }
 
+#currentAccount::before {
+  content: "Wallet: "
+}
+
+#balance::before {
+  content: "ETH: "
+}
+
 web3-button button {
     font-family: Poppins, sans-serif;
     background-color: #fad121;
