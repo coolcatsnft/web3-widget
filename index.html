@@ -23,6 +23,7 @@
       font-family: 'Poppins', sans-serif;
     }
 
+    .callout,
     button,
     pre {
       border-radius: 10px;
@@ -36,10 +37,17 @@
       appearance: none;
       border: 0 none;
       width: 100%;
+      background: lightblue;
+      font-size: 24px;
+      cursor: pointer;
+    }
+    
+    .callout  h3 {
+      margin-top: 0;
     }
 
     .visible-when-connected {
-      max-height: 0;
+      max-height: inherit;
       visibility: hidden;
     }
 
@@ -65,13 +73,13 @@
         js.src = f;
         js.async = 1;
         fjs.parentNode.insertBefore(js, fjs);
-      }(window, document, 'script', 'mw', './main.js'));
+      }(window, document, 'script', 'mw', 'https://coolcatsnft.github.io/web3-widget/main.js'));
     &lt;/script>
   </pre>
   <p>This should generate a button similar (unstyled) to the one below: </p>
   <web3-button></web3-button>
-  <div class="visible-when-connected">
-    <h3>Current Account:</h3>
+  <div class="visible-when-connected callout">
+    <h3>Current Account</h3>
     <p id="currentAccount"></p>
   </div>
   <p>By default, the button connects to the rinkeby network and allows users with metamask to connect.  You can configure additional wallet providers and the default network by using the following configuration:</p>
@@ -87,7 +95,7 @@
         js.src = f;
         js.async = 1;
         fjs.parentNode.insertBefore(js, fjs);
-      }(window, document, 'script', 'mw', './main.js'));
+      }(window, document, 'script', 'mw', 'https://coolcatsnft.github.io/web3-widget/main.js'));
       mw('NETWORK_ID', 1);
       mw('INFURA_APP_NAME', 'Your infura network name');
       mw('INFURA_ID', 'Your infura id');
@@ -106,7 +114,7 @@
     js.src = f;
     js.async = 1;
     fjs.parentNode.insertBefore(js, fjs);
-  }(window, document, 'script', 'mw', './main.js'));
+  }(window, document, 'script', 'mw', 'https://coolcatsnft.github.io/web3-widget/main.js'));
 </script>
 </body>
 </html>
