@@ -23,6 +23,7 @@
       font-family: 'Poppins', sans-serif;
     }
 
+    .callout,
     button,
     pre {
       border-radius: 10px;
@@ -36,10 +37,17 @@
       appearance: none;
       border: 0 none;
       width: 100%;
+      background: lightblue;
+      font-size: 24px;
+      cursor: pointer;
+    }
+    
+    .callout  h3 {
+      margin-top: 0;
     }
 
     .visible-when-connected {
-      max-height: 0;
+      max-height: inherit;
       visibility: hidden;
     }
 
@@ -71,7 +79,7 @@
   <p>This should generate a button similar (unstyled) to the one below: </p>
   <web3-button></web3-button>
   <div class="visible-when-connected">
-    <h3>Current Account:</h3>
+    <h3>Current Account</h3>
     <p id="currentAccount"></p>
   </div>
   <p>By default, the button connects to the rinkeby network and allows users with metamask to connect.  You can configure additional wallet providers and the default network by using the following configuration:</p>
