@@ -21,8 +21,8 @@ let selectedAccount = null;
 
 export let currentStatus = Web3Status.DISCONNECTED;
 
-const dispatchWeb3Event = (status, address) => {
-  document.dispatchEvent(new CustomEvent('web3-widget-event', { detail: { status, address } }));
+const dispatchWeb3Event = (status, address, web3) => {
+  document.dispatchEvent(new CustomEvent('web3-widget-event', { detail: { status, address, web3 } }));
 };
 
 export const fetchAccountData = async () => {
@@ -32,7 +32,7 @@ export const fetchAccountData = async () => {
   if (chainId !== networkId) {
     currentStatus = Web3Status.WRONG_NETWORK;
     selectedAccount = null;
-    dispatchWeb3Event(currentStatus, null);
+    dispatchWeb3Event(currentStatus, null, null);
     updateUI();
     return;
   }
@@ -41,7 +41,7 @@ export const fetchAccountData = async () => {
   const accounts = await web3.eth.getAccounts();
   selectedAccount = accounts[0];
   currentStatus = Web3Status.CONNECTED;
-  dispatchWeb3Event(currentStatus, selectedAccount);
+  dispatchWeb3Event(currentStatus, selectedAccount, web3);
   updateUI();
 };
 
@@ -52,7 +52,7 @@ export const onConnect = async () => {
   } catch (e) {
     console.log('Could not get a wallet connection', e);
     currentStatus = Web3Status.DISCONNECTED;
-    dispatchWeb3Event(currentStatus, selectedAccount);
+    dispatchWeb3Event(currentStatus, selectedAccount, null);
     return;
   }
 

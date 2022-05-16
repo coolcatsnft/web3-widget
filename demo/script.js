@@ -5,7 +5,9 @@ const walletconnectCheckbox = document.getElementById('walletconnect');
 const infuraAppNameInput = document.getElementById('INFURA_APP_NAME');
 const infuraIdInput = document.getElementById('INFURA_ID');
 const form = document.getElementById('form');
-const networkId = JSON.parse(localStorage.getItem('NETWORK_ID')).toString() || '2';
+
+const networkId = JSON.parse(localStorage.getItem('NETWORK_ID') || '1').toString();
+networkIdDropdown.value = networkId;
 
 const lsWallets = JSON.parse(localStorage.getItem('WALLET_LIST'));
 
@@ -14,7 +16,6 @@ if (!lsWallets?.length) {
 }
 const selectedWallets = JSON.parse(localStorage.getItem('WALLET_LIST'));
 
-networkIdDropdown.value = networkId;
 coinbaseCheckbox.checked = selectedWallets?.some(v => v === coinbaseCheckbox.value);
 walletconnectCheckbox.checked = selectedWallets?.some(v => v === walletconnectCheckbox.value);
 
@@ -44,6 +45,7 @@ function setConfiguration(e) {
   e.preventDefault();
   localStorage.setItem('INFURA_APP_NAME', infuraAppNameInput.value);
   localStorage.setItem('INFURA_ID', infuraIdInput.value);
+  localStorage.setItem('NETWORK_ID', networkIdDropdown.value);
   if (form.checkValidity()) {
     location.href = '/connect.html';
   }

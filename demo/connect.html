@@ -12,6 +12,7 @@
   <script>
     document.addEventListener('web3-widget-event', (e) => {
       document.getElementById('currentAccount').innerText = e.detail.address;
+      console.log(e)
     });
   </script>
 </head>
