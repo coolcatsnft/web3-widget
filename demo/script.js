@@ -16,8 +16,7 @@ const selectedWallets = JSON.parse(localStorage.getItem('WALLET_LIST'));
 
 networkIdDropdown.value = networkId;
 coinbaseCheckbox.checked = selectedWallets?.some(v => v === coinbaseCheckbox.value);
-walletconnectCheckbox.checked = selectedWallets?.some(v => v === coinbaseCheckbox.value);
-
+walletconnectCheckbox.checked = selectedWallets?.some(v => v === walletconnectCheckbox.value);
 
 if (coinbaseCheckbox.checked || walletconnect.checked) {
   infuraAppNameInput.setAttribute('required', '');
