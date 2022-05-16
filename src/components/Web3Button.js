@@ -51,6 +51,7 @@ export const updateUI = async () => {
 
   if (location.protocol !== 'https:') {
     web3Button.setAttribute('disabled', 'disabled');
+    web3Button.title = 'A secure connection is required for the web3 button to be enabled'
   }
 
   let innerText = '';

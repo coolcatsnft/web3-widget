@@ -1,0 +1,112 @@
+<html>
+<head>
+  <title>Web3 Widget</title>
+  <meta http-equiv="content-type" content="text/html; charset=utf-8" />
+  <link rel="shortcut icon" href="#" />
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@500;600&display=swap" rel="stylesheet">
+  <script>
+    document.addEventListener('web3-widget-event', (e) => {
+      document.getElementById('currentAccount').innerText = e.detail.address;
+      console.log(e);
+      if (e.detail.address) {
+        document.body.classList.add('web3-connected')
+      }
+    });
+  </script>
+  <style>
+    *,
+    *::before,
+    *::after {
+      box-sizing: border-box;
+      font-family: 'Poppins', sans-serif;
+    }
+
+    button,
+    pre {
+      border-radius: 10px;
+      margin: 16px;
+      padding: 16px;
+      background-color: lightgrey;
+      max-width: 700px;
+    }
+
+    button {
+      appearance: none;
+      border: 0 none;
+      width: 100%;
+    }
+
+    .visible-when-connected {
+      max-height: 0;
+      visibility: hidden;
+    }
+
+    .web3-connected .visible-when-connected {
+      max-height: auto;
+      visibility: visible;
+    }
+  </style>
+</head>
+<body>
+<div class="wrapper">
+  <h1 class="title">Web3 Widget</h1>
+  <p>To embed the web3 widget into your page use the following script below</p>
+  <pre>
+    &lt;script>
+      (function(w, d, s, o, f, js, fjs) {
+        w['web3-widget'] = o;
+        w[o] = w[o] || function() {
+          (w[o].q = w[o].q || []).push(arguments);
+        };
+        js = d.createElement(s), fjs = d.getElementsByTagName(s)[0];
+        js.id = o;
+        js.src = f;
+        js.async = 1;
+        fjs.parentNode.insertBefore(js, fjs);
+      }(window, document, 'script', 'mw', './main.js'));
+    &lt;/script>
+  </pre>
+  <p>This should generate a button similar (unstyled) to the one below: </p>
+  <web3-button></web3-button>
+  <div class="visible-when-connected">
+    <h3>Current Account:</h3>
+    <p id="currentAccount"></p>
+  </div>
+  <p>By default, the button connects to the rinkeby network and allows users with metamask to connect.  You can configure additional wallet providers and the default network by using the following configuration:</p>
+  <pre>
+    &lt;script>
+      (function(w, d, s, o, f, js, fjs) {
+        w['web3-widget'] = o;
+        w[o] = w[o] || function() {
+          (w[o].q = w[o].q || []).push(arguments);
+        };
+        js = d.createElement(s), fjs = d.getElementsByTagName(s)[0];
+        js.id = o;
+        js.src = f;
+        js.async = 1;
+        fjs.parentNode.insertBefore(js, fjs);
+      }(window, document, 'script', 'mw', './main.js'));
+      mw('NETWORK_ID', 1);
+      mw('INFURA_APP_NAME', 'Your infura network name');
+      mw('INFURA_ID', 'Your infura id');
+      mw('WALLET_LIST', ['walletlink', 'walletconnect']);
+    &lt;/script>
+  </pre>
+</div>
+<script>
+  (function(w, d, s, o, f, js, fjs) {
+    w['web3-widget'] = o;
+    w[o] = w[o] || function() {
+      (w[o].q = w[o].q || []).push(arguments);
+    };
+    js = d.createElement(s), fjs = d.getElementsByTagName(s)[0];
+    js.id = o;
+    js.src = f;
+    js.async = 1;
+    fjs.parentNode.insertBefore(js, fjs);
+  }(window, document, 'script', 'mw', './main.js'));
+</script>
+</body>
+</html>
