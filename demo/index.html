@@ -6,39 +6,58 @@
   <link rel="shortcut icon" href="#" />
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@600&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@500;600&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="styles.css">
-
-  <script>
-    (function(w, d, s, o, f, js, fjs) {
-      w['web3-widget'] = o;
-      w[o] = w[o] || function() {
-        (w[o].q = w[o].q || []).push(arguments);
-      };
-      js = d.createElement(s), fjs = d.getElementsByTagName(s)[0];
-      js.id = o;
-      js.src = f;
-      js.async = 1;
-      fjs.parentNode.insertBefore(js, fjs);
-    }(window, document, 'script', 'mw', './main.js'));
-    mw('NETWORK_ID', 4);
-    mw('INFURA_APP_NAME', 'cc');
-    mw('INFURA_ID', '08bd246da480453eaaa683c72e62bde6');
-    mw('WALLET_LIST', ['custom-metamask', 'walletlink', 'walletconnect']);
-  </script>
-  <script>
-    document.addEventListener('web3-widget-event', (e) => {
-      console.log(e);
-      document.getElementById('currentAccount').innerText = e.detail.address;
-    });
-  </script>
 </head>
 <body>
-<h1>Example web3 button</h1>
-<web3-button></web3-button>
-<br />
-<div><h3>Current Account:</h3>
-  <p id="currentAccount"></p></div>
+<div class="wrapper">
+  <h1 class="title">Web3 button configuration</h1>
+  <p class="info">Please select the wallets you wish to enable:</p>
+  <form id="form">
+    <div class="configuration">
+      <div>
+        <label for="NETWORK_ID">App network ID</label>
+        <select name="NETWORK_ID" id="NETWORK_ID">
+          <option value="1">Main</option>
+          <option value="3">Ropsten</option>
+          <option value="4">Rinkeby</option>
+          <option value="5">Goerli</option>
+          <option value="42">Kovan</option>
+          <option value="localhost">localhost</option>
+          <option value="local">Local</option>
+        </select>
+      </div>
+      <div class="wallet-list-container">
+        <div>
+          <label for="metamask">Metamask</label>
+          <input type="checkbox" id="metamask" name="metamask" value="custom-metamask" disabled checked>
+        </div>
+        <div>
+          <label for="coinbase">Coinbase</label>
+          <input type="checkbox" id="coinbase" name="coinbase" value="walletlink">
+        </div>
+        <div>
+          <label for="walletconnect">WalletConnect</label>
+          <input type="checkbox" id="walletconnect" name="walletconnect" value="walletconnect">
+        </div>
+      </div>
+      <div class="infura-configuration">
+        <p>For Coinbase and WalletConnect an InfuraId and app name is required.</p>
+        <div>
+          <label for="INFURA_APP_NAME">Infura App Name</label>
+          <input name="INFURA_APP_NAME" placeholder="Infura App name" type="text" id="INFURA_APP_NAME" />
+        </div>
+        <div>
+          <label for="INFURA_ID">Infura Id</label>
+          <input name="INFURA_ID" placeholder="Infura ID" type="text" id="INFURA_ID" />
+        </div>
+      </div>
+      <div>
+        <button type="submit">Set Configuration</button>
+      </div>
+    </div>
+  </form>
+</div>
 </body>
-
+<script src="script.js"></script>
 </html>
