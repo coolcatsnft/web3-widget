@@ -41,7 +41,6 @@
 
     pre {
       white-space: break-spaces;
-      padding-bottom: 0;
     }
 
     button {
@@ -100,8 +99,7 @@
 <div class="wrapper">
   <h1 class="title">Web3 Widget</h1>
   <p>To embed the web3 widget into your page use the following script below</p>
-  <pre>
-    &lt;script>
+  <pre>&lt;script>
       (function(w, d, s, o, f, js, fjs) {
         w['web3-widget'] = o;
         w[o] = w[o] || function() {
@@ -113,12 +111,9 @@
         js.async = 1;
         fjs.parentNode.insertBefore(js, fjs);
       }(window, document, 'script', 'mw', 'https://coolcatsnft.github.io/web3-widget/main.js'));
-    &lt;/script>
-  </pre>
+  &lt;/script></pre>
   <p>Then add the following tag into your pages html:</p>
-  <pre>
-    &lt;web3-button>&lt;/web3-button>
-  </pre>
+  <pre>&lt;web3-button>&lt;/web3-button></pre>
   <p>This should generate a button similar (unstyled) to the one below: </p>
   <web3-button></web3-button>
   <div class="visible-when-connected">
@@ -129,8 +124,7 @@
     </div>
   </div>
   <p>By default, the button connects to the rinkeby network and allows users with metamask to connect.  You can configure additional wallet providers and the default network by using the following configuration:</p>
-  <pre>
-    &lt;script>
+  <pre>&lt;script>
       (function(w, d, s, o, f, js, fjs) {
         w['web3-widget'] = o;
         w[o] = w[o] || function() {
@@ -146,8 +140,7 @@
       mw('INFURA_APP_NAME', 'Your infura network name');
       mw('INFURA_ID', 'Your infura id');
       mw('WALLET_LIST', ['walletlink', 'walletconnect']);
-    &lt;/script>
-  </pre>
+  &lt;/script></pre>
 </div>
 <script>
   (function(w, d, s, o, f, js, fjs) {
