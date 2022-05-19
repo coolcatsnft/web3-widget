@@ -44,7 +44,7 @@ export class Web3Button extends HTMLElement {
     });
 
     await updateUI();
-    document.getElementById(id).style.display = 'block';
+    document.getElementById(id).style.display = null;
   }
 }
 
