@@ -24,7 +24,7 @@ if (definedProviders.length === 0) {
 export const allProviderOptions = {
   'custom-metamask': {
     display: {
-      logo: '../assets/metamask-logo.svg',
+      logo: 'https://coolcatsnft.github.io/web3-widget/assets/metamask-logo.svg',
       name: 'MetaMask Wallet',
       description: 'Connect to your MetaMask Wallet'
     },
