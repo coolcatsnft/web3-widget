@@ -73,6 +73,7 @@ export const updateUI = async () => {
     default:
       throw new Error('Unknown web3 status');
   }
+  web3Button.setAttribute('title', innerText);
   web3Button.innerText = innerText;
 };
 

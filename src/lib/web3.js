@@ -25,10 +25,9 @@ const dispatchWeb3Event = (status, address, web3) => {
   document.dispatchEvent(new CustomEvent('web3-widget-event', { detail: { status, address, web3 } }));
 };
 
-export const fetchAccountData = async () => {
+export const fetchAccountData = async (from) => {
   const web3 = new Web3(provider);
   const chainId = await web3.eth.getChainId();
-
   if (chainId !== networkId) {
     currentStatus = Web3Status.WRONG_NETWORK;
     selectedAccount = null;
@@ -40,8 +39,8 @@ export const fetchAccountData = async () => {
   // Get list of accounts of the connected wallet
   const accounts = await web3.eth.getAccounts();
   selectedAccount = accounts[0];
-  currentStatus = Web3Status.CONNECTED;
-  dispatchWeb3Event(currentStatus, selectedAccount, web3);
+  currentStatus = selectedAccount ? Web3Status.CONNECTED : Web3Status.DISCONNECTED;
+  dispatchWeb3Event(currentStatus, selectedAccount, selectedAccount ? web3 : null);
   updateUI();
 };
 
@@ -57,19 +56,13 @@ export const onConnect = async () => {
   }
 
   // Subscribe to accounts change
-  provider.on('accountsChanged', (accounts) => {
-    fetchAccountData();
-  });
+  provider.on('accountsChanged', fetchAccountData);
 
   // Subscribe to chainId change
-  provider.on('chainChanged', (chainId) => {
-    fetchAccountData();
-  });
+  provider.on('chainChanged', fetchAccountData);
 
   // Subscribe to networkId change
-  provider.on('networkChanged', (networkId) => {
-    fetchAccountData();
-  });
+  provider.on('networkChanged', fetchAccountData);
 
   await fetchAccountData();
 };
@@ -79,6 +72,10 @@ export const onDisconnect = async () => {
     await provider?.close();
   }
   await web3Modal.clearCachedProvider();
+
+  provider.removeListener('accountsChanged', fetchAccountData);
+  provider.removeListener('chainChanged', fetchAccountData);
+  provider.removeListener('networkChanged', fetchAccountData);
 
   provider = null;
   selectedAccount = null;
