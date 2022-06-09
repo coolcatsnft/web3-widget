@@ -71,8 +71,7 @@ export const onConnect = async () => {
   await fetchAccountData();
 
   if (web3) {
-    web3Subscription = web3.eth.subscribe('newBlockHeaders', async (err,ret) => {
-      console.log(ret);
+    web3Subscription = web3.eth.subscribe('newBlockHeaders', async (err, ret) => {
       if (err) {
         console.log(err);
       } else {
