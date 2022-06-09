@@ -1,5 +1,5 @@
 import Web3Modal from 'web3modal';
-import { networkId, providerOptions } from './providerOptions';
+import { configuration, networkId, providerOptions } from './providerOptions';
 import Web3 from 'web3';
 import { updateUI } from '../components/Web3Button';
 
@@ -19,19 +19,22 @@ export let provider;
 // Address of the selected account
 let selectedAccount = null;
 
+let web3 = null;
+let web3Subscription = null;
+
 export let currentStatus = Web3Status.DISCONNECTED;
 
-const dispatchWeb3Event = (status, address, web3) => {
-  document.dispatchEvent(new CustomEvent('web3-widget-event', { detail: { status, address, web3 } }));
+const dispatchWeb3Event = (status, address, balance, web3) => {
+  document.dispatchEvent(new CustomEvent('web3-widget-event', { detail: { status, address, balance, web3 } }));
 };
 
 export const fetchAccountData = async (from) => {
-  const web3 = new Web3(provider);
+  web3 = new Web3(provider);
   const chainId = await web3.eth.getChainId();
   if (chainId !== networkId) {
     currentStatus = Web3Status.WRONG_NETWORK;
     selectedAccount = null;
-    dispatchWeb3Event(currentStatus, null, null);
+    dispatchWeb3Event(currentStatus, null, null, null);
     updateUI();
     return;
   }
@@ -40,7 +43,8 @@ export const fetchAccountData = async (from) => {
   const accounts = await web3.eth.getAccounts();
   selectedAccount = accounts[0];
   currentStatus = selectedAccount ? Web3Status.CONNECTED : Web3Status.DISCONNECTED;
-  dispatchWeb3Event(currentStatus, selectedAccount, selectedAccount ? web3 : null);
+  const balance = await web3.eth.getBalance(selectedAccount);
+  dispatchWeb3Event(currentStatus, selectedAccount, web3.utils.fromWei(balance), selectedAccount ? web3 : null);
   updateUI();
 };
 
@@ -65,6 +69,18 @@ export const onConnect = async () => {
   provider.on('networkChanged', fetchAccountData);
 
   await fetchAccountData();
+
+  if (web3) {
+    web3Subscription = web3.eth.subscribe('newBlockHeaders', async (err, ret) => {
+      if (err) {
+        console.log(err);
+      } else {
+        const balance = await web3.eth.getBalance(selectedAccount);
+        dispatchWeb3Event(currentStatus, selectedAccount, web3.utils.fromWei(balance));
+      }
+    });
+  }
+
 };
 
 export const onDisconnect = async () => {
@@ -80,6 +96,7 @@ export const onDisconnect = async () => {
   provider = null;
   selectedAccount = null;
   currentStatus = Web3Status.DISCONNECTED;
+  web3Subscription?.unsubscribe();
   dispatchWeb3Event(currentStatus, selectedAccount);
 };
 
@@ -105,7 +122,7 @@ export const networkName = (id) => {
     case 'localhost':
       return 'localhost';
     default:
-      return 'local';
+      throw new Error('unsupported network');
   }
 };
 
@@ -113,7 +130,7 @@ export const networkName = (id) => {
  * Setup
  */
 export const init = () => {
-  if (location.protocol !== 'https:') {
+  if (!configuration.IS_DEV && location.protocol !== 'https:') {
     return;
   }
 

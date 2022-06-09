@@ -8,7 +8,7 @@ import {
   web3Modal,
   Web3Status
 } from '../lib/web3';
-import { networkId } from '../lib/providerOptions';
+import { configuration, networkId } from '../lib/providerOptions';
 
 const id = `web3button_${(Math.random(1000) * 1000)}`
 
@@ -51,7 +51,7 @@ export class Web3Button extends HTMLElement {
 export const updateUI = async () => {
   const web3Button = document.getElementById(id);
 
-  if (location.protocol !== 'https:') {
+  if (!configuration.IS_DEV && location.protocol !== 'https:') {
     web3Button.setAttribute('disabled', 'disabled');
     web3Button.title = 'A secure connection is required for the web3 button to be enabled'
   }

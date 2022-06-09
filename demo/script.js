@@ -6,7 +6,7 @@ const infuraAppNameInput = document.getElementById('INFURA_APP_NAME');
 const infuraIdInput = document.getElementById('INFURA_ID');
 const form = document.getElementById('form');
 
-const networkId = JSON.parse(localStorage.getItem('NETWORK_ID') || '1').toString();
+const networkId = (localStorage.getItem('NETWORK_ID') || '1').toString();
 networkIdDropdown.value = networkId;
 
 const lsWallets = JSON.parse(localStorage.getItem('WALLET_LIST'));

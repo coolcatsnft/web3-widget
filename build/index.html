@@ -77,11 +77,21 @@
       visibility: visible;
     }
 
-    #currentAccount::before {
+    #balance:empty,
+    #currentAccount:empty {
+      display: none;
+    }
+
+    #balance:not(:empty),
+    #currentAccount:not(:empty) {
+      display: block;
+    }
+
+    #currentAccount:not(:empty)::before {
       content: "Wallet: "
     }
 
-    #balance::before {
+    #balance:not(:empty)::before {
       content: "ETH: "
     }
 
@@ -118,7 +128,6 @@
   <web3-button></web3-button>
   <div class="visible-when-connected">
     <div class="callout">
-      <h3>Current Account</h3>
       <p id="currentAccount"></p>
       <p id="balance"></p>
     </div>

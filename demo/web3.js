@@ -13,3 +13,4 @@
   mw('INFURA_APP_NAME', localStorage.getItem('INFURA_APP_NAME'));
   mw('INFURA_ID', localStorage.getItem('INFURA_ID'));
   mw('WALLET_LIST', ['walletlink']);
+  mw('IS_DEV', true);
