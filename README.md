@@ -17,6 +17,7 @@ To add it to a website add the following script:
     mw('INFURA_APP_NAME', '');
     mw('INFURA_ID', '');
     mw('WALLET_LIST', ['custom-metamask', 'walletlink', 'walletconnect']);
+    mw('IS_DEV', false);
 </script>
 ```
 And place the web component: `<web3-button></web3-button>`
