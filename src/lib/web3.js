@@ -76,7 +76,7 @@ export const onConnect = async () => {
         console.log(err);
       } else {
         const balance = await web3.eth.getBalance(selectedAccount);
-        dispatchWeb3Event(currentStatus, selectedAccount, web3.utils.fromWei(balance));
+        dispatchWeb3Event(currentStatus, selectedAccount, web3.utils.fromWei(balance), web3);
       }
     });
   }
