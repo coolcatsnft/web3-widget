@@ -22,7 +22,6 @@ To add it to a website add the following script:
 ```
 And place the web component: `<web3-button></web3-button>`
 
-
 You need to fill in the script with your settings:
 - URL_TO_SCRIPT
 - NETWORK_ID: 
@@ -31,17 +30,35 @@ You need to fill in the script with your settings:
 - WALLET_LIST: list of supported wallets
 - IS_DEV: By default, the component only supports HTTPS.  Setting this to true will disable this and allow to test on local HTTP connections.
 
-The library sends a custom event `web3-widget-event` on connect, disconnect, network change and ETH balance change, that you can listen to and get the web3 connection status and selected account.
+## Listening for events
+
+The library sends a custom event `web3-widget-event` on connect, disconnect, network change and ETH balance change, that you can listen to and get the web3 connection status, wallet address, ETH balance and web3 library.  To receive this data, add an event listener on your page, similar to below:
+
+```
+<script>
+    document.addEventListener('web3-widget-event', console.log);
+</script>
+```
+
+Once connected, you should see the following:
+
+<img width="824" alt="image" src="https://user-images.githubusercontent.com/92721591/173254239-91db123d-6ec5-49e1-99d0-79d8bda1a320.png">
+
+The detail property should contain our web3 account data:
+
 ```
     {
         detail: {
             address: "0x..."
-            status: "connected"
+            status: "connected",
+            balance: "0.1",
+            web3: [...]
         }
         ...
     }
 ```
-- list of web3 statuses: `disconnected`, `connected`, `pending`, `wrong_network`
+
+The status property can contain one of the following: `disconnected`, `connected`, `pending`, `wrong_network`.
   
 ### Embedding in React
 Here is a quick example of how we currently embed the widget in React applications:
