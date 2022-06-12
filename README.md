@@ -49,7 +49,7 @@ Here is a quick example of how we currently embed the widget in React applicatio
 ```
 import { createElement, memo, useEffect } from "react";
 
-export function Web3ButtonComponent() {
+export function Web3Button() {
   useEffect(() => {
     const id = 'web3-button-script';
     if (!document.getElementById(id)) {
@@ -76,7 +76,7 @@ export function Web3ButtonComponent() {
   return createElement('web3-button', { }, null);
 }
 
-export default memo(Web3ButtonComponent);
+export default memo(Web3Button);
 ```
 
 The embed code is the same, however we are wrapping it in a `useEffect` and rendering a web3-button element using `React.createElement`.
