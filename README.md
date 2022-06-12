@@ -29,6 +29,7 @@ You need to fill in the script with your settings:
 - INFURA_APP_NAME:
 - INFURA_ID:
 - WALLET_LIST: list of supported wallets
+- IS_DEV: By default, the component only supports HTTPS.  Setting this to true will disable this and allow to test on local HTTP connections.
 
 The library sends a custom event `web3-widget-event` on connect, disconnect, network change and ETH balance change, that you can listen to and get the web3 connection status and selected account.
 ```
