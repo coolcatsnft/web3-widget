@@ -21,6 +21,7 @@ let selectedAccount = null;
 
 let web3 = null;
 let web3Subscription = null;
+let currentBalance = null;
 
 export let currentStatus = Web3Status.DISCONNECTED;
 
@@ -28,12 +29,30 @@ const dispatchWeb3Event = (status, address, balance, web3) => {
   document.dispatchEvent(new CustomEvent('web3-widget-event', { detail: { status, address, balance, web3 } }));
 };
 
+const dispatchBalanceEvent = async (status, address, web3) => {
+  if (address && web3 && status === Web3Status.CONNECTED) {
+    try {
+      const balance = await web3.eth.getBalance(address);
+      if (currentBalance !== balance) {
+        currentBalance = balance;
+        return dispatchWeb3Event(status, address, web3.utils.fromWei(balance), web3);
+      }
+
+      return;
+    } catch(e) {}
+  }
+
+  currentBalance = null;
+  return dispatchWeb3Event(status, address, null, web3);
+}
+
 export const fetchAccountData = async (from) => {
   web3 = new Web3(provider);
   const chainId = await web3.eth.getChainId();
   if (chainId !== networkId) {
     currentStatus = Web3Status.WRONG_NETWORK;
     selectedAccount = null;
+    currentBalance = null;
     dispatchWeb3Event(currentStatus, null, null, null);
     updateUI();
     return;
@@ -43,8 +62,7 @@ export const fetchAccountData = async (from) => {
   const accounts = await web3.eth.getAccounts();
   selectedAccount = accounts[0];
   currentStatus = selectedAccount ? Web3Status.CONNECTED : Web3Status.DISCONNECTED;
-  const balance = await web3.eth.getBalance(selectedAccount);
-  dispatchWeb3Event(currentStatus, selectedAccount, web3.utils.fromWei(balance), selectedAccount ? web3 : null);
+  dispatchBalanceEvent(currentStatus, selectedAccount, web3);
   updateUI();
 };
 
@@ -65,9 +83,6 @@ export const onConnect = async () => {
   // Subscribe to chainId change
   provider.on('chainChanged', fetchAccountData);
 
-  // Subscribe to networkId change
-  provider.on('networkChanged', fetchAccountData);
-
   await fetchAccountData();
 
   if (web3) {
@@ -75,8 +90,7 @@ export const onConnect = async () => {
       if (err) {
         console.log(err);
       } else {
-        const balance = await web3.eth.getBalance(selectedAccount);
-        dispatchWeb3Event(currentStatus, selectedAccount, web3.utils.fromWei(balance), web3);
+        dispatchBalanceEvent(currentStatus, selectedAccount, web3);
       }
     });
   }
@@ -95,6 +109,7 @@ export const onDisconnect = async () => {
 
   provider = null;
   selectedAccount = null;
+  currentBalance = null;
   currentStatus = Web3Status.DISCONNECTED;
   web3Subscription?.unsubscribe();
   dispatchWeb3Event(currentStatus, selectedAccount);

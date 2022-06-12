@@ -13,6 +13,16 @@
     document.addEventListener('web3-widget-event', (e) => {
       document.getElementById('currentAccount').innerText = e.detail.address || '';
       document.getElementById('balance').innerText = e.detail.balance || '';
+
+      var log = document.createElement('div');
+      log.innerText = JSON.stringify({
+        status: e.detail.status,
+        address: e.detail.address,
+        balance: e.detail.balance,
+        web3: e.detail.web3 ? '[object Object]' : null
+      });
+
+      document.getElementById('log').prepend(log);
     });
   </script>
 </head>
@@ -27,6 +37,7 @@
   <div>
     <p id="currentAccount"></p>
     <p id="balance"></p>
+    <code id="log"></code>
   </div>
 </div>
 </body>

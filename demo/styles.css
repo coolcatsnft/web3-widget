@@ -102,12 +102,14 @@ label {
 }
 
 #balance:empty,
-#currentAccount:empty {
+#currentAccount:empty,
+#log:empty {
   display: none;
 }
 
 #balance:not(:empty),
-#currentAccount:not(:empty) {
+#currentAccount:not(:empty),
+#log:not(:empty) {
   display: block;
 }
 
@@ -117,6 +119,15 @@ label {
 
 #balance:not(:empty)::before {
   content: "ETH: "
+}
+
+#log:not(:empty) div {
+  word-break: break-all;
+  padding: 16px 0;
+}
+
+#log:not(:empty) div + div {
+  padding-top: 0;
 }
 
 web3-button button {
