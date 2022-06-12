@@ -30,7 +30,7 @@ You need to fill in the script with your settings:
 - INFURA_ID:
 - WALLET_LIST: list of supported wallets
 
-The library sends a custom event `web3-widget-event` on connect, disconnect and network change, that you can listen to and get the web3 connection status and selected account.
+The library sends a custom event `web3-widget-event` on connect, disconnect, network change and ETH balance change, that you can listen to and get the web3 connection status and selected account.
 ```
     {
         detail: {
