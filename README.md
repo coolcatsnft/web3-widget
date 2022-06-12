@@ -46,7 +46,7 @@ The library sends a custom event `web3-widget-event` on connect, disconnect, net
 Here is a quick example of how we currently embed the widget in React applications:
 
 ```
-import React, { useEffect } from "react";
+import { createElement, memo, useEffect } from "react";
 
 export function Web3ButtonComponent() {
   useEffect(() => {
@@ -72,10 +72,10 @@ export function Web3ButtonComponent() {
     }
   }, []);
   
-  return React.createElement('web3-button', { }, null);
+  return createElement('web3-button', { }, null);
 }
 
-export default React.memo(Web3ButtonComponent);
+export default memo(Web3ButtonComponent);
 ```
 
 The embed code is the same, however we are wrapping it in a `useEffect` and rendering a web3-button element using `React.createElement`.
