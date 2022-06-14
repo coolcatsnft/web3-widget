@@ -1,7 +1,6 @@
 import {
   currentStatus,
   init,
-  networkName,
   onConnect,
   onDisconnect,
   onSwitchNetwork,
@@ -9,6 +8,7 @@ import {
   Web3Status
 } from '../lib/web3';
 import { configuration, networkId } from '../lib/providerOptions';
+import { networkName } from '../lib/networkName';
 
 const id = `web3button_${(Math.random(1000) * 1000)}`
 

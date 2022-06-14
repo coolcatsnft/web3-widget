@@ -19,7 +19,8 @@
         status: e.detail.status,
         address: e.detail.address,
         balance: e.detail.balance,
-        web3: e.detail.web3 ? '[object Object]' : null
+        web3: e.detail.web3 ? '[object Object]' : null,
+        error: e.detail.error
       });
 
       document.getElementById('log').prepend(log);

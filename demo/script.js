@@ -2,6 +2,7 @@ const networkIdDropdown = document.getElementById('NETWORK_ID');
 const metamaskCheckbox = document.getElementById('metamask');
 const coinbaseCheckbox = document.getElementById('coinbase');
 const walletconnectCheckbox = document.getElementById('walletconnect');
+const sequenceCheckbox = document.getElementById('sequence');
 const infuraAppNameInput = document.getElementById('INFURA_APP_NAME');
 const infuraIdInput = document.getElementById('INFURA_ID');
 const form = document.getElementById('form');
@@ -12,12 +13,13 @@ networkIdDropdown.value = networkId;
 const lsWallets = JSON.parse(localStorage.getItem('WALLET_LIST'));
 
 if (!lsWallets?.length) {
-  localStorage.setItem('WALLET_LIST', JSON.stringify(['custom-metamask']));
+  localStorage.setItem('WALLET_LIST', JSON.stringify(['metamask']));
 }
 const selectedWallets = JSON.parse(localStorage.getItem('WALLET_LIST'));
 
 coinbaseCheckbox.checked = selectedWallets?.some(v => v === coinbaseCheckbox.value);
 walletconnectCheckbox.checked = selectedWallets?.some(v => v === walletconnectCheckbox.value);
+sequenceCheckbox.checked = selectedWallets?.some(v => v === sequenceCheckbox.value);
 
 if (coinbaseCheckbox.checked || walletconnect.checked) {
   infuraAppNameInput.setAttribute('required', '');
@@ -53,4 +55,5 @@ function setConfiguration(e) {
 
 coinbaseCheckbox.addEventListener('click', () => selectWallet('walletlink'));
 walletconnectCheckbox.addEventListener('click', () => selectWallet('walletconnect'));
+sequenceCheckbox.addEventListener('click', () => selectWallet('sequence'));
 form.addEventListener('submit', setConfiguration);

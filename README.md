@@ -16,7 +16,7 @@ To add it to a website add the following script:
     mw('NETWORK_ID', 1);
     mw('INFURA_APP_NAME', '');
     mw('INFURA_ID', '');
-    mw('WALLET_LIST', ['custom-metamask', 'walletlink', 'walletconnect']);
+    mw('WALLET_LIST', ['metamask', 'walletlink', 'walletconnect']);
     mw('IS_DEV', false);
 </script>
 ```
@@ -30,8 +30,16 @@ You need to fill in the script with your settings:
 - WALLET_LIST: list of supported wallets
 - IS_DEV: By default, the component only supports HTTPS.  Setting this to true will disable this and allow to test on local HTTP connections.
 
-## Listening for events
+### Supported Wallets
+Currently ths widget supports:
+- `metamask`
+- `walletlink`
+- `walletconnect`
 
+### Wallets in testing (not supported yet)
+- `sequence`
+
+## Listening for events
 The library sends a custom event `web3-widget-event` on connect, disconnect, network change and ETH balance change, that you can listen to and get the web3 connection status, wallet address, ETH balance and web3 library.  To receive this data, add an event listener on your page, similar to below:
 
 ```

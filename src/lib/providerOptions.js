@@ -1,5 +1,7 @@
 import { CoinbaseWalletSDK } from '@coinbase/wallet-sdk';
 import WalletConnect from '@walletconnect/web3-provider';
+import { sequence } from '0xsequence';
+import { networkName } from './networkName';
 
 const globalObject = window[window['web3-widget']];
 export const configuration = (globalObject.q || [["NETWORK_ID", 4]]).reduce((acc, conf) => ({ ...acc, [conf[0]]: conf[1] }), {});
@@ -9,12 +11,13 @@ const infuraId = configuration.INFURA_ID;
 const appName = configuration.INFURA_APP_NAME || 'Web3 Connect';
 export const networkId = configuration.NETWORK_ID;
 
-if (!infuraId && definedProviders.includes('walletlink')) {
-  definedProviders = definedProviders.filter((p => p !== 'walletlink'));
+if (!infuraId) {
+  definedProviders = definedProviders.filter((p => !['walletconnect', 'walletlink'].includes(p)));
 }
 
-if (!infuraId && definedProviders.includes('walletconnect')) {
-  definedProviders = definedProviders.filter((p => p !== 'walletconnect'));
+if (definedProviders.includes('metamask')) {
+  definedProviders = definedProviders.filter((p => p !== 'metamask'));
+  definedProviders.push('custom-metamask');
 }
 
 if (definedProviders.length === 0) {
@@ -67,6 +70,13 @@ export const allProviderOptions = {
     package: WalletConnect,
     options: {
       infuraId
+    }
+  },
+  sequence: {
+    package: sequence,
+    options: {
+      appName,
+      defaultNetwork: networkName(networkId).toLowerCase()
     }
   }
 };

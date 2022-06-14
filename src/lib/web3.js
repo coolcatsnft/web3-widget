@@ -25,8 +25,8 @@ let currentBalance = null;
 
 export let currentStatus = Web3Status.DISCONNECTED;
 
-const dispatchWeb3Event = (status, address, balance, web3) => {
-  document.dispatchEvent(new CustomEvent('web3-widget-event', { detail: { status, address, balance, web3 } }));
+const dispatchWeb3Event = (status, address, balance, web3, error) => {
+  document.dispatchEvent(new CustomEvent('web3-widget-event', { detail: { status, address, balance, web3, error } }));
 };
 
 const dispatchBalanceEvent = async (status, address, web3) => {
@@ -73,7 +73,7 @@ export const onConnect = async () => {
   } catch (e) {
     console.log('Could not get a wallet connection', e);
     currentStatus = Web3Status.DISCONNECTED;
-    dispatchWeb3Event(currentStatus, selectedAccount, null);
+    dispatchWeb3Event(currentStatus, selectedAccount, null, null, e);
     return;
   }
 
@@ -120,25 +120,6 @@ export const onSwitchNetwork = async () => {
     method: 'wallet_switchEthereumChain',
     params: [{ chainId: `0x${ networkId }` }]
   });
-};
-
-export const networkName = (id) => {
-  switch (String(id)) {
-    case '1':
-      return 'Main';
-    case '3':
-      return 'Ropsten';
-    case '4':
-      return 'Rinkeby';
-    case '5':
-      return 'Goerli';
-    case '42':
-      return 'Kovan';
-    case 'localhost':
-      return 'localhost';
-    default:
-      throw new Error('unsupported network');
-  }
 };
 
 /**
