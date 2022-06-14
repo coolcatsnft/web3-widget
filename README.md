@@ -64,7 +64,7 @@ The status property can contain one of the following: `disconnected`, `connected
 Here is a quick example of how we currently embed the widget in React applications:
 
 ```
-import { createElement, memo, useEffect } from "react";
+import { createElement, useEffect } from "react";
 
 export function Web3Button() {
   useEffect(() => {
@@ -93,7 +93,7 @@ export function Web3Button() {
   return createElement('web3-button', { }, null);
 }
 
-export default memo(Web3Button);
+export default Web3Button;
 ```
 
 The embed code is the same, however we are wrapping it in a `useEffect` and rendering a web3-button element using `React.createElement`.
