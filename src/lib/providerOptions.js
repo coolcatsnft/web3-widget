@@ -34,7 +34,7 @@ export const allProviderOptions = {
     package: true,
     connector: async () => {
       if (typeof window.ethereum === 'undefined') {
-        window.location = 'https://metamask.app.link/dapp/www.ethbox.org/app/';
+        window.location = `https://metamask.app.link/dapp/${window.location.href}`;
         return;
       }
 
