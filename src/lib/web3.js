@@ -43,7 +43,7 @@ const dispatchBalanceEvent = async (status, address, web3) => {
   }
 
   currentBalance = null;
-  return dispatchWeb3Event(status, address, null, web3);
+  return dispatchWeb3Event(status, null, null, null);
 }
 
 export const fetchAccountData = async (from) => {
@@ -94,7 +94,6 @@ export const onConnect = async () => {
       }
     });
   }
-
 };
 
 export const onDisconnect = async () => {
