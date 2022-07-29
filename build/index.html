@@ -10,7 +10,7 @@
     document.addEventListener('web3-widget-event', (e) => {
       document.getElementById('currentAccount').innerText = e.detail.address;
       document.getElementById('balance').innerText = "";
-      console.log(e);
+
       if (e.detail.address) {
         document.body.classList.add('web3-connected')
         e.detail.web3.eth.getBalance(e.detail.address).then(function(balance) {
@@ -58,15 +58,15 @@
       color: darkgrey;
       cursor: not-allowed;
     }
-    
+
     .callout h3 {
       margin-top: 0;
     }
-    
+
     .callout *:first-of-type {
       margin-top: 0;
     }
-    
+
     .callout *:last-of-type {
       margin-bottom: 0;
     }

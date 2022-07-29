@@ -14,16 +14,13 @@
       document.getElementById('currentAccount').innerText = e.detail.address || '';
       document.getElementById('balance').innerText = e.detail.balance || '';
 
-      var log = document.createElement('div');
-      log.innerText = JSON.stringify({
+      document.getElementById('log').innerHTML = JSON.stringify({
         status: e.detail.status,
         address: e.detail.address,
         balance: e.detail.balance,
         web3: e.detail.web3 ? '[object Object]' : null,
         error: e.detail.error
       });
-
-      document.getElementById('log').prepend(log);
     });
   </script>
 </head>

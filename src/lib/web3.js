@@ -1,7 +1,6 @@
-import Web3Modal from 'web3modal';
-import { configuration, networkId, providerOptions } from './providerOptions';
-import Web3 from 'web3';
+import { client, networkId } from './providerOptions';
 import { updateUI } from '../components/Web3Button';
+import { ethers } from 'ethers';
 
 export const Web3Status = {
   DISCONNECTED: 'disconnected',
@@ -10,17 +9,13 @@ export const Web3Status = {
   WRONG_NETWORK: 'wrong_network'
 };
 
-// web3Modal instance
-export let web3Modal;
-
-// Chosen wallet provider given by the dialog window
-export let provider;
-
 // Address of the selected account
 let selectedAccount = null;
 
+let selectedConnector = null;
+let provider;
 let web3 = null;
-let web3Subscription = null;
+
 let currentBalance = null;
 
 export let currentStatus = Web3Status.DISCONNECTED;
@@ -29,47 +24,52 @@ const dispatchWeb3Event = (status, address, balance, web3, error) => {
   document.dispatchEvent(new CustomEvent('web3-widget-event', { detail: { status, address, balance, web3, error } }));
 };
 
-const dispatchBalanceEvent = async (status, address, web3) => {
-  if (address && web3 && status === Web3Status.CONNECTED) {
+const dispatchBalanceEvent = async (status, address) => {
+  if (address && status === Web3Status.CONNECTED) {
     try {
-      const balance = await web3.eth.getBalance(address);
-      if (currentBalance !== balance) {
-        currentBalance = balance;
-        return dispatchWeb3Event(status, address, web3.utils.fromWei(balance), web3);
-      }
-
-      return;
-    } catch(e) {}
+      const balance = await web3.getBalance(address);
+      return dispatchWeb3Event(status, address, ethers.utils.formatEther(balance), web3);
+    } catch (e) {
+      console.log(e);
+    }
   }
-
   currentBalance = null;
   return dispatchWeb3Event(status, null, null, null);
-}
-
-export const fetchAccountData = async (from) => {
-  web3 = new Web3(provider);
-  const chainId = await web3.eth.getChainId();
-  if (chainId !== networkId) {
-    currentStatus = Web3Status.WRONG_NETWORK;
-    selectedAccount = null;
-    currentBalance = null;
-    dispatchWeb3Event(currentStatus, null, null, null);
-    updateUI();
-    return;
-  }
-
-  // Get list of accounts of the connected wallet
-  const accounts = await web3.eth.getAccounts();
-  selectedAccount = accounts[0];
-  currentStatus = selectedAccount ? Web3Status.CONNECTED : Web3Status.DISCONNECTED;
-  dispatchBalanceEvent(currentStatus, selectedAccount, web3);
-  updateUI();
 };
 
-export const onConnect = async () => {
+export const fetchAccountData = async () => {
+  if (client) {
+    const chainId = await selectedConnector.getChainId();
+    if (chainId !== networkId) {
+      currentStatus = Web3Status.WRONG_NETWORK;
+      selectedAccount = null;
+      currentBalance = null;
+      dispatchWeb3Event(currentStatus, null, null, null);
+      updateUI();
+    } else {
+      // Get list of accounts of the connected wallet
+      try {
+        selectedAccount = await selectedConnector.getAccount();
+        currentStatus = selectedAccount ? Web3Status.CONNECTED : Web3Status.DISCONNECTED;
+        dispatchBalanceEvent(currentStatus, selectedAccount, web3);
+        updateUI();
+      } catch (e) {
+        console.log(e);
+        currentStatus = Web3Status.DISCONNECTED;
+        updateUI();
+      }
+    }
+  }
+};
+
+export const onConnect = async (connector) => {
   currentStatus = Web3Status.PENDING;
+  selectedConnector = connector;
+  provider = await selectedConnector.getProvider();
+  web3 = new ethers.providers.Web3Provider(provider);
+
   try {
-    provider = await web3Modal.connect();
+    await selectedConnector.connect();
   } catch (e) {
     console.log('Could not get a wallet connection', e);
     currentStatus = Web3Status.DISCONNECTED;
@@ -77,62 +77,41 @@ export const onConnect = async () => {
     return;
   }
 
-  // Subscribe to accounts change
+  // Subscribe to account change
   provider.on('accountsChanged', fetchAccountData);
 
   // Subscribe to chainId change
   provider.on('chainChanged', fetchAccountData);
 
-  await fetchAccountData();
-
   if (web3) {
-    web3Subscription = web3.eth.subscribe('newBlockHeaders', async (err, ret) => {
-      if (err) {
-        console.log(err);
-      } else {
-        dispatchBalanceEvent(currentStatus, selectedAccount, web3);
-      }
-    });
+    web3.on('block', (block) => dispatchBalanceEvent(currentStatus, selectedAccount));
   }
+
+  await fetchAccountData();
 };
 
 export const onDisconnect = async () => {
-  if (provider?.close) {
-    await provider?.close();
-  }
-  await web3Modal.clearCachedProvider();
+  selectedConnector.disconnect();
+  web3.off('block');
 
   provider.removeListener('accountsChanged', fetchAccountData);
   provider.removeListener('chainChanged', fetchAccountData);
   provider.removeListener('networkChanged', fetchAccountData);
 
+  client.destroy();
   provider = null;
   selectedAccount = null;
   currentBalance = null;
+  web3 = null;
   currentStatus = Web3Status.DISCONNECTED;
-  web3Subscription?.unsubscribe();
   dispatchWeb3Event(currentStatus, selectedAccount);
 };
 
 export const onSwitchNetwork = async () => {
-  provider.request({
-    method: 'wallet_switchEthereumChain',
-    params: [{ chainId: `0x${ networkId }` }]
-  });
-};
-
-/**
- * Setup
- */
-export const init = () => {
-  if (!configuration.IS_DEV && location.protocol !== 'https:') {
-    return;
+  if (selectedConnector) {
+    await selectedConnector.switchChain(networkId);
   }
-
-  // initialize web3Modal
-  web3Modal = new Web3Modal({
-    providerOptions,
-    cacheProvider: true,
-    disableInjectedProvider: true
-  });
+  web3 = new ethers.providers.Web3Provider(provider);
+  fetchAccountData();
 };
+
