@@ -25,6 +25,23 @@ let ens = null;
 
 export let currentStatus = Web3Status.DISCONNECTED;
 
+async function ensReverse(address) {
+  const namehash = await web3.eth.call({
+    to: '0x084b1c3c81545d370f3634392de611caabff8148', // ENS: Reverse Registrar
+    data: web3.eth.abi.encodeFunctionCall({
+      name: 'node', type: 'function',
+      inputs: [{type: 'address', name: 'addr'}]
+    }, [address])
+  });
+  return web3.eth.abi.decodeParameter('string', await web3.eth.call({
+    to: '0xa2c122be93b0074270ebee7f6b7292c7deb45047', // ENS: Default Reverse Resolver
+    data: web3.eth.abi.encodeFunctionCall({
+      name: 'name', type: 'function',
+      inputs: [{type: 'bytes32', name: 'hash'}]
+    }, [namehash])
+  }));
+}
+
 const dispatchWeb3Event = (status, address, balance, web3, error) => {
   document.dispatchEvent(new CustomEvent('web3-widget-event', { detail: { status, address, balance, web3, ens: ens || "", error, walletType: walletInfo?.walletType || '', disconnect: onDisconnect } }));
 };
@@ -65,10 +82,12 @@ export const fetchAccountData = async (from) => {
   currentStatus = selectedAccount ? Web3Status.CONNECTED : Web3Status.DISCONNECTED;
   if (selectedAccount) {
     try {
-      ens = await web3.eth.ens.getResolver(selectedAccount);
-      console.log(ens)
+      const name = await ensReverse(selectedAccount);
+      if (typeof name === 'string' && name.indexOf('.eth') > 0) {
+        ens = name;
+      }
     } catch (e) {
-
+      console.log(e);
     }
   }
   dispatchBalanceEvent(currentStatus, selectedAccount, web3);

@@ -21,7 +21,8 @@
         balance: e.detail.balance,
         web3: e.detail.web3 ? '[object Object]' : null,
         error: e.detail.error,
-        walletType: e.detail.walletType
+        walletType: e.detail.walletType,
+        ens: e.detail.ens
       });
 
       document.getElementById('log').prepend(log);
