@@ -43,7 +43,7 @@ async function ensReverse(address) {
 }
 
 const dispatchWeb3Event = (status, address, balance, web3, error) => {
-  document.dispatchEvent(new CustomEvent('web3-widget-event', { detail: { status, address, balance, web3, ens: ens || "", error, walletType: walletInfo?.walletType || '', disconnect: onDisconnect } }));
+  document.dispatchEvent(new CustomEvent('web3-widget-event', { detail: { status, address, balance, network: config.network.name, web3, ens: ens || "", error, walletType: walletInfo?.walletType || '', disconnect: onDisconnect } }));
 };
 
 const dispatchBalanceEvent = async (status, address, web3) => {
