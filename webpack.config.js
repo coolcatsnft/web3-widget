@@ -1,6 +1,7 @@
 const path = require('path');
 const webpack = require('webpack');
 const CopyPlugin = require('copy-webpack-plugin');
+const TerserPlugin = require("terser-webpack-plugin");
 
 module.exports = (env) => {
   const isDevBuild = !(env && env.prod);
@@ -14,7 +15,7 @@ module.exports = (env) => {
       filename: '[name].js',
       path: isDevBuild ? path.resolve(__dirname, 'demo') : path.resolve(__dirname, 'build')
     },
-    devtool: 'source-map',
+    devtool: isDevBuild ? 'source-map': false,
     devServer: {
       static: {
         directory: path.join(__dirname, 'demo')
@@ -43,6 +44,10 @@ module.exports = (env) => {
         ]
       })
     ],
+    optimization: {
+      minimize: true,
+      minimizer: [new TerserPlugin()],
+    },
     resolve: {
       fallback: {
         url: require.resolve('url'),
@@ -53,7 +58,8 @@ module.exports = (env) => {
         https: require.resolve('https-browserify'),
         os: require.resolve('os-browserify/browser'),
         buffer: require.resolve('buffer'),
-        stream: require.resolve('stream-browserify')
+        stream: require.resolve('stream-browserify'),
+        'process/browser': require.resolve('process/browser')
       },
       extensions: ['.ts', '.tsx', '.js', '.jsx']
 

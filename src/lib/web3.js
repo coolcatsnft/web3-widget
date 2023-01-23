@@ -1,6 +1,7 @@
-import Web3Modal from 'web3modal';
-import { configuration, networkId, providerOptions } from './providerOptions';
+import { config } from './providerOptions';
 import Web3 from 'web3';
+import { Magic } from "magic-sdk";
+import { ConnectExtension } from "@magic-ext/connect";
 import { updateUI } from '../components/Web3Button';
 
 export const Web3Status = {
@@ -10,23 +11,22 @@ export const Web3Status = {
   WRONG_NETWORK: 'wrong_network'
 };
 
-// web3Modal instance
-export let web3Modal;
-
 // Chosen wallet provider given by the dialog window
 export let provider;
 
 // Address of the selected account
 let selectedAccount = null;
-
+let magic = null;
 let web3 = null;
 let web3Subscription = null;
 let currentBalance = null;
+let walletInfo = null;
+let ens = null;
 
 export let currentStatus = Web3Status.DISCONNECTED;
 
 const dispatchWeb3Event = (status, address, balance, web3, error) => {
-  document.dispatchEvent(new CustomEvent('web3-widget-event', { detail: { status, address, balance, web3, error } }));
+  document.dispatchEvent(new CustomEvent('web3-widget-event', { detail: { status, address, balance, web3, ens: ens || "", error, walletType: walletInfo?.walletType || '', disconnect: onDisconnect } }));
 };
 
 const dispatchBalanceEvent = async (status, address, web3) => {
@@ -35,7 +35,7 @@ const dispatchBalanceEvent = async (status, address, web3) => {
       const balance = await web3.eth.getBalance(address);
       if (currentBalance !== balance) {
         currentBalance = balance;
-        return dispatchWeb3Event(status, address, web3.utils.fromWei(balance), web3);
+        return dispatchWeb3Event(status, address, web3.utils.fromWei(balance), web3, null, walletInfo?.walletType);
       }
 
       return;
@@ -47,41 +47,51 @@ const dispatchBalanceEvent = async (status, address, web3) => {
 }
 
 export const fetchAccountData = async (from) => {
-  web3 = new Web3(provider);
   const chainId = await web3.eth.getChainId();
-  if (chainId !== networkId) {
+  if (chainId !== config.network.id) {
     currentStatus = Web3Status.WRONG_NETWORK;
     selectedAccount = null;
     currentBalance = null;
-    dispatchWeb3Event(currentStatus, null, null, null);
+    walletInfo = null;
+    dispatchWeb3Event(currentStatus, null, null, null, null, null);
     updateUI();
     return;
   }
 
   // Get list of accounts of the connected wallet
   const accounts = await web3.eth.getAccounts();
+  walletInfo = await magic.connect.getWalletInfo();
   selectedAccount = accounts[0];
   currentStatus = selectedAccount ? Web3Status.CONNECTED : Web3Status.DISCONNECTED;
+  if (selectedAccount) {
+    try {
+      ens = await web3.eth.ens.getResolver(selectedAccount);
+      console.log(ens)
+    } catch (e) {
+
+    }
+  }
   dispatchBalanceEvent(currentStatus, selectedAccount, web3);
   updateUI();
 };
 
 export const onConnect = async () => {
   currentStatus = Web3Status.PENDING;
+  dispatchWeb3Event(currentStatus, null, null, null);
   try {
-    provider = await web3Modal.connect();
+    await web3.eth.getAccounts();
   } catch (e) {
     console.log('Could not get a wallet connection', e);
     currentStatus = Web3Status.DISCONNECTED;
-    dispatchWeb3Event(currentStatus, selectedAccount, null, null, e);
+    dispatchWeb3Event(currentStatus, selectedAccount, null, null, e, walletInfo?.walletType);
     return;
   }
 
   // Subscribe to accounts change
-  provider.on('accountsChanged', fetchAccountData);
+  web3.currentProvider.on('accountsChanged', fetchAccountData);
 
   // Subscribe to chainId change
-  provider.on('chainChanged', fetchAccountData);
+  web3.currentProvider.on('chainChanged', fetchAccountData);
 
   await fetchAccountData();
 
@@ -97,18 +107,15 @@ export const onConnect = async () => {
 };
 
 export const onDisconnect = async () => {
-  if (provider?.close) {
-    await provider?.close();
-  }
-  await web3Modal.clearCachedProvider();
-
-  provider.removeListener('accountsChanged', fetchAccountData);
-  provider.removeListener('chainChanged', fetchAccountData);
-  provider.removeListener('networkChanged', fetchAccountData);
+  await magic.connect.disconnect()
+  web3.currentProvider.removeListener('accountsChanged', fetchAccountData);
+  web3.currentProvider.removeListener('chainChanged', fetchAccountData);
+  web3.currentProvider.removeListener('networkChanged', fetchAccountData);
 
   provider = null;
   selectedAccount = null;
   currentBalance = null;
+  ens = null;
   currentStatus = Web3Status.DISCONNECTED;
   web3Subscription?.unsubscribe();
   dispatchWeb3Event(currentStatus, selectedAccount);
@@ -125,14 +132,16 @@ export const onSwitchNetwork = async () => {
  * Setup
  */
 export const init = () => {
-  if (!configuration.IS_DEV && location.protocol !== 'https:') {
+  if (!config.configuration.IS_DEV && location.protocol !== 'https:') {
     return;
   }
 
-  // initialize web3Modal
-  web3Modal = new Web3Modal({
-    providerOptions,
-    cacheProvider: true,
-    disableInjectedProvider: true
+  magic = new Magic(config.magic_link_key, {
+    network: config.network.name,
+    locale: "en_US",
+    extensions: [new ConnectExtension()]
   });
+
+  web3 = new Web3(magic.rpcProvider);
+  provider = web3.currentProvider;
 };

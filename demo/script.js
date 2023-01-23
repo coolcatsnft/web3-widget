@@ -1,59 +1,20 @@
 const networkIdDropdown = document.getElementById('NETWORK_ID');
-const metamaskCheckbox = document.getElementById('metamask');
-const coinbaseCheckbox = document.getElementById('coinbase');
-const walletconnectCheckbox = document.getElementById('walletconnect');
-const sequenceCheckbox = document.getElementById('sequence');
-const infuraAppNameInput = document.getElementById('INFURA_APP_NAME');
-const infuraIdInput = document.getElementById('INFURA_ID');
+const magicLinkInput = document.getElementById('MAGIC_LINK_KEY');
 const form = document.getElementById('form');
 
 const networkId = (localStorage.getItem('NETWORK_ID') || '1').toString();
 networkIdDropdown.value = networkId;
 
-const lsWallets = JSON.parse(localStorage.getItem('WALLET_LIST'));
-
-if (!lsWallets?.length) {
-  localStorage.setItem('WALLET_LIST', JSON.stringify(['metamask']));
-}
-const selectedWallets = JSON.parse(localStorage.getItem('WALLET_LIST'));
-
-coinbaseCheckbox.checked = selectedWallets?.some(v => v === coinbaseCheckbox.value);
-walletconnectCheckbox.checked = selectedWallets?.some(v => v === walletconnectCheckbox.value);
-sequenceCheckbox.checked = selectedWallets?.some(v => v === sequenceCheckbox.value);
-
-if (coinbaseCheckbox.checked || walletconnect.checked) {
-  infuraAppNameInput.setAttribute('required', '');
-  infuraIdInput.setAttribute('required', '');
-}
-
-function selectWallet(wallet) {
-  if (!selectedWallets.includes(wallet)) {
-    selectedWallets.push(wallet);
-  } else {
-    selectedWallets.splice(selectedWallets.indexOf(wallet), 1);
-  }
-  localStorage.setItem('WALLET_LIST', JSON.stringify(selectedWallets));
-
-  if (coinbaseCheckbox.checked || walletconnect.checked) {
-    infuraAppNameInput.setAttribute('required', '');
-    infuraIdInput.setAttribute('required', '');
-  } else {
-    infuraAppNameInput.removeAttribute('required');
-    infuraIdInput.removeAttribute('required');
-  }
-};
+const magicLinkKey = (localStorage.getItem('MAGIC_LINK_KEY') || '').toString();
+magicLinkInput.value = magicLinkKey;
 
 function setConfiguration(e) {
   e.preventDefault();
-  localStorage.setItem('INFURA_APP_NAME', infuraAppNameInput.value);
-  localStorage.setItem('INFURA_ID', infuraIdInput.value);
   localStorage.setItem('NETWORK_ID', networkIdDropdown.value);
+  localStorage.setItem('MAGIC_LINK_KEY', magicLinkInput.value);
   if (form.checkValidity()) {
     location.href = '/connect.html';
   }
 }
 
-coinbaseCheckbox.addEventListener('click', () => selectWallet('walletlink'));
-walletconnectCheckbox.addEventListener('click', () => selectWallet('walletconnect'));
-sequenceCheckbox.addEventListener('click', () => selectWallet('sequence'));
 form.addEventListener('submit', setConfiguration);

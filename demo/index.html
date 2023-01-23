@@ -26,33 +26,11 @@
           <option value="137">Polygon</option>
         </select>
       </div>
-      <div class="wallet-list-container">
+      <div class="magic-configuration">
+        <p>A magic link key is required.</p>
         <div>
-          <label for="metamask">Metamask</label>
-          <input type="checkbox" id="metamask" name="metamask" value="metamask" disabled checked>
-        </div>
-        <div>
-          <label for="coinbase">Coinbase</label>
-          <input type="checkbox" id="coinbase" name="coinbase" value="walletlink">
-        </div>
-        <div>
-          <label for="walletconnect">WalletConnect</label>
-          <input type="checkbox" id="walletconnect" name="walletconnect" value="walletconnect">
-        </div>
-        <div>
-          <label for="sequence">Sequence</label>
-          <input type="checkbox" id="sequence" name="sequence" value="sequence">
-        </div>
-      </div>
-      <div class="infura-configuration">
-        <p>For Coinbase and WalletConnect an InfuraId and app name is required.</p>
-        <div>
-          <label for="INFURA_APP_NAME">Infura App Name</label>
-          <input name="INFURA_APP_NAME" placeholder="Infura App name" type="text" id="INFURA_APP_NAME" />
-        </div>
-        <div>
-          <label for="INFURA_ID">Infura Id</label>
-          <input name="INFURA_ID" placeholder="Infura ID" type="text" id="INFURA_ID" />
+          <label for="MAGIC_LINK_KEY">Magic link key</label>
+          <input name="MAGIC_LINK_KEY" placeholder="Magic Link Key" required type="text" id="MAGIC_LINK_KEY" />
         </div>
       </div>
       <div>

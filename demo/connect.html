@@ -20,7 +20,8 @@
         address: e.detail.address,
         balance: e.detail.balance,
         web3: e.detail.web3 ? '[object Object]' : null,
-        error: e.detail.error
+        error: e.detail.error,
+        walletType: e.detail.walletType
       });
 
       document.getElementById('log').prepend(log);

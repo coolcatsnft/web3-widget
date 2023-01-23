@@ -1,7 +1,7 @@
 export const networkName = (id) => {
   switch (String(id)) {
     case '1':
-      return 'Main';
+      return 'Mainnet';
     case '3':
       return 'Ropsten';
     case '4':

@@ -4,10 +4,9 @@ import {
   onConnect,
   onDisconnect,
   onSwitchNetwork,
-  web3Modal,
   Web3Status
 } from '../lib/web3';
-import { configuration, networkId } from '../lib/providerOptions';
+import { config } from '../lib/providerOptions';
 import { networkName } from '../lib/networkName';
 
 const id = `web3button_${(Math.random(1000) * 1000)}`
@@ -23,13 +22,19 @@ export class Web3Button extends HTMLElement {
     init();
 
     this.appendChild(template.content.cloneNode(true));
+
+    document.addEventListener('web3-widget-event', async (e) => {
+      const web3Button = document.getElementById(id);
+      if (e?.detail?.status === Web3Status.PENDING) {
+        web3Button.setAttribute('disabled', 'disabled');
+      }
+      if ([Web3Status.DISCONNECTED, Web3Status.WRONG_NETWORK, Web3Status.CONNECTED].indexOf(e?.detail?.status) >= 0) {
+        web3Button.removeAttribute('disabled');
+      }
+    });
   }
 
   async connectedCallback() {
-    if (web3Modal?.cachedProvider) {
-      await onConnect();
-    }
-
     this.addEventListener('click', async (e) => {
       if (currentStatus === Web3Status.DISCONNECTED) {
         await onConnect();
@@ -51,8 +56,7 @@ export class Web3Button extends HTMLElement {
 export const updateUI = async () => {
   const web3Button = document.getElementById(id);
 
-  if (!configuration.IS_DEV && location.protocol !== 'https:') {
-    web3Button.setAttribute('disabled', 'disabled');
+  if (!config.configuration.IS_DEV && location.protocol !== 'https:') {
     web3Button.title = 'A secure connection is required for the web3 button to be enabled'
   }
 
@@ -73,10 +77,10 @@ export const updateUI = async () => {
     default:
       throw new Error('Unknown web3 status');
   }
-  web3Button.setAttribute('title', innerText);
 
-  if (typeof configuration.CLASS === 'string' && configuration.CLASS.length > 0) {
-    web3Button.classList.add(configuration.CLASS);
+  web3Button.setAttribute('title', innerText);
+  if (typeof config.configuration.CLASS === 'string' && config.configuration.CLASS.length > 0) {
+    web3Button.classList.add(config.configuration.CLASS);
   }
 
   web3Button.innerText = innerText;
