@@ -10,8 +10,6 @@
     fjs.parentNode.insertBefore(js, fjs);
   }(window, document, 'script', 'mw', './main.js'));
   mw('NETWORK_ID', JSON.parse(localStorage.getItem('NETWORK_ID')));
-  mw('INFURA_APP_NAME', localStorage.getItem('INFURA_APP_NAME'));
-  mw('INFURA_ID', localStorage.getItem('INFURA_ID'));
-  mw('WALLET_LIST', JSON.parse(localStorage.getItem('WALLET_LIST') || '[]'));
+  mw('MAGIC_LINK_KEY', localStorage.getItem('MAGIC_LINK_KEY'));
   mw('IS_DEV', true);
   mw('CLASS', '');
