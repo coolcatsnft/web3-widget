@@ -137,7 +137,7 @@
       <p id="balance"></p>
     </div>
   </div>
-  <p>By default, the button connects to the rinkeby network and allows users with metamask to connect.  You can configure additional wallet providers and the default network by using the following configuration:</p>
+  <p>This widget uses Magic.link to connect to a configured network (mainnet be default).</p>
   <pre>&lt;script>
       (function(w, d, s, o, f, js, fjs) {
         w['web3-widget'] = o;
@@ -149,7 +149,7 @@
         js.src = f;
         js.async = 1;
         fjs.parentNode.insertBefore(js, fjs);
-      }(window, document, 'script', 'mw', 'https://coolcatsnft.github.io/web3-widget/main.js'));
+      }(window, document, 'script', 'mw', 'https://widget.coolcatsnft.com/main.js'));
       mw('NETWORK_ID', 1);
       mw('MAGIC_LINK_KEY', '');
   &lt;/script></pre>
