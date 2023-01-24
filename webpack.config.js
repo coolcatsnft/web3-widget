@@ -2,15 +2,20 @@ const path = require('path');
 const webpack = require('webpack');
 const CopyPlugin = require('copy-webpack-plugin');
 const TerserPlugin = require("terser-webpack-plugin");
+const package = require('./package.json');
 
 module.exports = (env) => {
   const isDevBuild = !(env && env.prod);
 
+  const entry = {
+    main: path.resolve(__dirname, '/src/index.js')
+  };
+
+  entry['main-' + package.version] = path.resolve(__dirname, '/src/index.js');
+
   return {
     mode: isDevBuild ? 'development' : 'production',
-    entry: {
-      main: path.resolve(__dirname, '/src/index.js')
-    },
+    entry: entry,
     output: {
       filename: '[name].js',
       path: isDevBuild ? path.resolve(__dirname, 'demo') : path.resolve(__dirname, 'build')

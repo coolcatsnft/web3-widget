@@ -1,6 +1,7 @@
 {
   "name": "web3-widget",
   "main": "index.js",
+  "version": "0.0.1",
   "scripts": {
     "build": "./node_modules/.bin/webpack --config webpack.config.js",
     "build-release": "./node_modules/.bin/webpack --config webpack.config.js --env=prod",
