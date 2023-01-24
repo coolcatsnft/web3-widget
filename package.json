@@ -9,7 +9,7 @@
   "dependencies": {
     "@magic-ext/connect": "^6.1.0",
     "magic-sdk": "^13.1.0",
-    "web3": "^1.6.0"
+    "web3": "^1.8.1"
   },
   "devDependencies": {
     "assert": "^2.0.0",

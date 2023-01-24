@@ -80,7 +80,7 @@ export const fetchAccountData = async (from) => {
   walletInfo = await magic.connect.getWalletInfo();
   selectedAccount = accounts[0];
   currentStatus = selectedAccount ? Web3Status.CONNECTED : Web3Status.DISCONNECTED;
-  if (selectedAccount) {
+  if (selectedAccount && config.network.id === 1) {
     try {
       const name = await ensReverse(selectedAccount);
       if (typeof name === 'string' && name.indexOf('.eth') > 0) {
